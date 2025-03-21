@@ -6,4 +6,4 @@ Pillow
 werkzeug
 gunicorn
 pillow
-tesseract-ocr
+
