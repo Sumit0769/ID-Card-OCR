@@ -57,9 +57,9 @@ def index():
             filepath = os.path.join(UPLOAD_FOLDER, file.filename)
             file.save(filepath)
             extracted_data = extract_details(filepath)
-            return render_template("index.html", extracted_data=extracted_data, image_path=filepath)
+            return render_template("OCR HTML.html", extracted_data=extracted_data, image_path=filepath)
 
-    return render_template("index.html", extracted_data=None)
+    return render_template("OCR HTML.html", extracted_data=None)
 
 if __name__ == "__main__":
     app.run(debug=True)
