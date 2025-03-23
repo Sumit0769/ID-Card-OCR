@@ -62,7 +62,7 @@ def extract_details(image_path):
     full_course = f"{course_1} {course_2}" if course_1 and course_2 else course_1 or course_2
 
     # Save to Excel
-    save_to_excel(name, prn, full_course)
+    save_to_csv(name, prn, full_course)
 
     return {"Course": full_course, "Name": name, "PRN": prn}
         
