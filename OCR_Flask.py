@@ -35,13 +35,15 @@ def extract_details(image_path):
     lines = [line.strip() for line in text.split("\n") if line.strip()]
     for line in lines:
         if re.search(r"(M\.Sc|MSc|Data Science|Spatial Analytics)", line, re.IGNORECASE):
-            course = line.strip()
+            course_1 = line.strip()
+        if re.search(r"Analytics", line, re.IGNORECASE):
+            course_2 = line.strip()
         if re.search(r"Mr\.|Ms\.", line, re.IGNORECASE):
             name = line.strip()
         if re.search(r"^240702430\d{2}$", line):
             prn = line.strip()
     
-    return {"Course": course, "Name": name, "PRN": prn}
+    return {"Course": course_1+" "+course_2, "Name": name, "PRN": prn}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
