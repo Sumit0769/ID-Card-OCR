@@ -8,6 +8,7 @@ import ftfy
 import pandas as pd
 from datetime import datetime
 from flask import send_file
+import openpyxl
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "static/uploads"
