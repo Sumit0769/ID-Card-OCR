@@ -62,6 +62,14 @@ def extract_details(image_path):
     
     return {"Course": course, "Name": name, "PRN": prn}
 
+def save_to_csv(name, prn, course):
+    file_exists = os.path.isfile(CSV_FILE)
+    with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        if not file_exists:
+            writer.writerow(["Name", "PRN", "Course", "Extracted At"])
+        writer.writerow([name, prn, course, datetime.now()])
+        
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
