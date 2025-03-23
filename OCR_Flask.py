@@ -18,18 +18,15 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Path to Tesseract OCR
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
-def save_to_excel(name, prn, course):
+def save_to_csv(name, prn, course):
     data = {"Name": [name], "PRN": [prn], "Course": [course], "Extracted At": [datetime.now()]}
     df_new = pd.DataFrame(data)
 
     # If the file exists, append; otherwise, create a new file
-    try:
-        existing_df = pd.read_excel(CSV_FILE)
-        df_new = pd.concat([existing_df, df_new], ignore_index=True)
-    except FileNotFoundError:
-        pass  # No existing file, will create a new one
-
-    df_new.to_excel(CSV_FILE, index=False, engine="openpyxl")
+    if os.path.exists(CSV_FILE):
+        df_new.to_csv(CSV_FILE, mode='a', header=False, index=False)
+    else:
+        df_new.to_csv(CSV_FILE, index=False)
     
 def extract_details(image_path):
     image = cv2.imread(image_path)
@@ -87,10 +84,10 @@ def index():
 
     return render_template("OCR HTML.html", extracted_data=None)
 
-@app.route("/download", methods=["GET"])
-def download_excel():
+@app.route("/download_csv", methods=["GET"])
+def download_csv():
     try:
-        return send_file(EXCEL_FILE, as_attachment=True, download_name="Extracted_Data.xlsx")
+        return send_file(CSV_FILE, as_attachment=True, download_name="Extracted_Data.csv")
     except FileNotFoundError:
         return "No data available to download.", 404
         
