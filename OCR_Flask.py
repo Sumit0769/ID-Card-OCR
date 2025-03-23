@@ -5,14 +5,16 @@ import cv2
 import os
 import re
 import ftfy
+import pandas as pd
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "static/uploads"
+CSV_FILE = "extracted_data.csv"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Path to Tesseract OCR
-#pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
 def extract_details(image_path):
     image = cv2.imread(image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -31,19 +33,34 @@ def extract_details(image_path):
     text = ftfy.fix_encoding(text)
     
     # Extract details
-    name, prn, course = None, None, None
+    name, prn, course_1, course_2 = None, None, None, None
     lines = [line.strip() for line in text.split("\n") if line.strip()]
+    
     for line in lines:
-        if re.search(r"(M\.Sc|MSc|Data Science|Spatial Analytics)", line, re.IGNORECASE):
+        if re.search(r"^(M\.Sc|MSc|Data Science|Spatial Analytics)", line, re.IGNORECASE):
             course_1 = line.strip()
-        if re.search(r"Analytics", line, re.IGNORECASE):
+        if re.search(r"^Analytics", line, re.IGNORECASE):
             course_2 = line.strip()
         if re.search(r"Mr\.|Ms\.", line, re.IGNORECASE):
             name = line.strip()
         if re.search(r"^240702430\d{2}$", line):
             prn = line.strip()
     
-    return {"Course": course_1+" "+course_2, "Name": name, "PRN": prn}
+    # Combine course details properly
+    course = f"{course_1 or ''} {course_2 or ''}".strip()
+    
+    # Save extracted data to CSV
+    data = {"Course": [course], "Name": [name], "PRN": [prn]}
+    
+    # Check if CSV exists; if not, create a new one with headers
+    if not os.path.exists(CSV_FILE):
+        df = pd.DataFrame(data)
+        df.to_csv(CSV_FILE, index=False)
+    else:
+        df = pd.DataFrame(data)
+        df.to_csv(CSV_FILE, mode='a', header=False, index=False)
+    
+    return {"Course": course, "Name": name, "PRN": prn}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -64,4 +81,4 @@ def index():
     return render_template("OCR HTML.html", extracted_data=None)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000,debug=True)
+    app.run(debug=True)
