@@ -23,7 +23,7 @@ def save_to_excel(name, prn, course):
 
     # If the file exists, append; otherwise, create a new file
     try:
-        existing_df = pd.read_excel(EXCEL_FILE)
+        existing_df = pd.read_excel(CSV_FILE)
         df_new = pd.concat([existing_df, df_new], ignore_index=True)
     except FileNotFoundError:
         pass  # No existing file, will create a new one
