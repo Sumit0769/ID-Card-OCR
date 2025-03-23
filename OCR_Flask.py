@@ -28,7 +28,7 @@ def save_to_excel(name, prn, course):
     except FileNotFoundError:
         pass  # No existing file, will create a new one
 
-    df_new.to_excel(EXCEL_FILE, index=False, engine="openpyxl")
+    df_new.to_excel(CSV_FILE, index=False, engine="openpyxl")
     
 def extract_details(image_path):
     image = cv2.imread(image_path)
