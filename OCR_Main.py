@@ -7,7 +7,7 @@ import re
 import ftfy
 import pandas as pd
 
-app = Flask(__name__)
+OCR_Main = Flask(__name__)
 UPLOAD_FOLDER = "static/uploads"
 CSV_FILE = "extracted_data.csv"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
