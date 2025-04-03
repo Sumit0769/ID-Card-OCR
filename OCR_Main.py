@@ -6,9 +6,6 @@ import os
 import re
 import ftfy
 import pandas as pd
-from datetime import datetime
-from flask import send_file
-import openpyxl
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "static/uploads"
@@ -18,16 +15,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Path to Tesseract OCR
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
-def save_to_csv(name, prn, course):
-    data = {"Name": [name], "PRN": [prn], "Course": [course], "Extracted At": [datetime.now()]}
-    df_new = pd.DataFrame(data)
-
-    # If the file exists, append; otherwise, create a new file
-    if os.path.exists(CSV_FILE):
-        df_new.to_csv(CSV_FILE, mode='a', header=False, index=False)
-    else:
-        df_new.to_csv(CSV_FILE, index=False)
-    
 def extract_details(image_path):
     image = cv2.imread(image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -59,13 +46,22 @@ def extract_details(image_path):
         if re.search(r"^240702430\d{2}$", line):
             prn = line.strip()
     
-    full_course = f"{course_1} {course_2}" if course_1 and course_2 else course_1 or course_2
+    # Combine course details properly
+    course = f"{course_1 or ''} {course_2 or ''}".strip()
+    
+    # Save extracted data to CSV
+    data = {"Course": [course], "Name": [name], "PRN": [prn]}
+    
+    # Check if CSV exists; if not, create a new one with headers
+    if not os.path.exists(CSV_FILE):
+        df = pd.DataFrame(data)
+        df.to_csv(CSV_FILE, index=False)
+    else:
+        df = pd.DataFrame(data)
+        df.to_csv(CSV_FILE, mode='a', header=False, index=False)
+    
+    return {"Course": course, "Name": name, "PRN": prn}
 
-    # Save to Excel
-    save_to_csv(name, prn, full_course)
-
-    return {"Course": full_course, "Name": name, "PRN": prn}
-        
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
@@ -84,12 +80,5 @@ def index():
 
     return render_template("OCR HTML.html", extracted_data=None)
 
-@app.route("/download_csv", methods=["GET"])
-def download_csv():
-    try:
-        return send_file(CSV_FILE, as_attachment=True, download_name="Extracted_Data.csv")
-    except FileNotFoundError:
-        return "No data available to download.", 404
-        
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000,debug=True)
+    app.run(debug=True)
