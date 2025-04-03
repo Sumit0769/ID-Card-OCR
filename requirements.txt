@@ -1,5 +1,5 @@
 Flask
-opencv-python
+opencv-python-headless
 pytesseract
 ftfy
 Pillow
@@ -8,3 +8,4 @@ gunicorn
 pillow
 pandas
 openpyxl
+
