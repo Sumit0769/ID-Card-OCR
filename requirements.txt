@@ -1,11 +1,7 @@
-Flask
-opencv-python-headless
-pytesseract
-ftfy
-Pillow
-werkzeug
-gunicorn
+flask
 pillow
+pytesseract
+opencv-python-headless
+ftfy
 pandas
-openpyxl
-
+gunicorn
