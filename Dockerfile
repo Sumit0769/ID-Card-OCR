@@ -17,4 +17,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Fix the command (use "app:app" if your Flask instance is named 'app')
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "OCR_Main:app"]  
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]  
