@@ -1,20 +1,21 @@
 # Use an official lightweight Python image
 FROM python:3.11-slim
 
-# Set environment variable to ensure non-interactive mode
+# Set environment variable to avoid interactive prompts during install
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update and install Tesseract OCR and required dependencies
+# Update and install required dependencies including Tesseract OCR
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     libtesseract-dev \
     libleptonica-dev \
-    && rm -rf /var/lib/apt/lists/*
+    tesseract-ocr-eng \
+    && apt-get clean
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the application files
+# Copy project files
 COPY . .
 
 # Install Python dependencies
