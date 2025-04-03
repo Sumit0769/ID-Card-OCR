@@ -9,12 +9,12 @@ RUN apt-get update && \
 
 WORKDIR /app
 
+# Install Python dependencies FIRST
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Then copy the rest of the files
 COPY . .
 
-ENV FLASK_APP=app.py
-ENV FLASK_ENV=production
-
-CMD ["gunicorn", "--bind", "0.0.0.0:10000", "OCR_Main:app"]
+# Fix the command (use "app:app" if your Flask instance is named 'app')
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "OCR_Main:app"]  
