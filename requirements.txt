@@ -1,7 +1,7 @@
-flask
-pillow
-pytesseract
-opencv-python-headless
-ftfy
-pandas
-gunicorn
+Flask==2.0.1
+pytesseract==0.3.10
+opencv-python-headless==4.9.0.80
+pandas==2.1.4
+pillow==10.2.0
+ftfy==6.2.0
+numpy==1.26.4
