@@ -13,7 +13,7 @@ CSV_FILE = "extracted_data.csv"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Path to Tesseract OCR
-pytesseract.pytesseract.tesseract_cmd = r"/usr/bin/tesseract"
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 def extract_details(image_path):
     image = cv2.imread(image_path)
@@ -81,4 +81,4 @@ def index():
     return render_template("OCR HTML.html", extracted_data=None)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)
